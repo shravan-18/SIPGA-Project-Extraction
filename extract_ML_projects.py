@@ -46,16 +46,19 @@ def process_spreadsheet(project_title, project_description, OPENAI_API_KEY=api_k
 
 if __name__ == "__main__":
     df = load_csv("SIPGA_Project_List.csv")
-    AI_DF = pd.DataFrame(columns=df.columns)
+    # AI_DF = pd.DataFrame(columns=df.columns)
+    AI_DF = pd.read_csv("Sipga_AI_Projects.csv")
 
-    for index, row in df.iterrows():
-        print(f'Currently Checking Row: {index+1}')
-        ProjectTitle = row["Project Title"]
-        ProjectDescription = row["Project Description"]
-        llm_response = process_spreadsheet(ProjectTitle, ProjectDescription)
+    for index, row in enumerate(df.iterrows()):
+        if index > 108:
+            print(f'Currently Checking Row: {index+1}')
+            ProjectTitle = row["Project Title"]
+            ProjectDescription = row["Project Description"]
+            llm_response = process_spreadsheet(ProjectTitle, ProjectDescription)
 
-        if llm_response:
-            AI_DF = pd.concat([AI_DF, pd.DataFrame([row])], ignore_index=True)
+            if llm_response:
+                AI_DF = pd.concat([AI_DF, pd.DataFrame([row])], ignore_index=True)
+                AI_DF.to_csv("Sipga_AI_Projects.csv")
 
     # Reset the index of the new DataFrame
     AI_DF.reset_index(drop=True, inplace=True)
